@@ -1,0 +1,6 @@
+name = "mc-start"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+# 部署后需要设置密钥 FC_TOKEN（FC 函数的启动 token）
+# 命令：wrangler secret put FC_TOKEN

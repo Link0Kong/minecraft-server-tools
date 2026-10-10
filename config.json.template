@@ -1,0 +1,6 @@
+{
+  "AccessKeyId": "替换为你的 AccessKeyId",
+  "AccessKeySecret": "替换为你的 AccessKeySecret",
+  "Domain": "mc.example.com",
+  "RR": "mc"
+}

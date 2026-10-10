@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Minecraft 服务器 · 启动</title>
+<style>
+  :root{--bg:#0f172a;--card:#1e293b;--line:#334155;--tx:#e2e8f0;--dim:#94a3b8;--acc:#38bdf8}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;
+       background:radial-gradient(1200px 600px at 50% -10%,#1e3a5f 0,var(--bg) 60%);color:var(--tx);
+       font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Microsoft YaHei',sans-serif;padding:20px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:44px 40px;
+        text-align:center;max-width:440px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+  h1{margin:0 0 10px;font-size:26px;letter-spacing:.5px}
+  p{margin:0 0 22px;color:var(--dim);font-size:15px;line-height:1.7}
+  code{background:#0b1220;padding:2px 7px;border-radius:6px;color:var(--acc);font-size:14px}
+  button{background:var(--acc);border:0;color:#0b1220;font-size:17px;font-weight:700;
+         padding:15px 44px;border-radius:12px;cursor:pointer;transition:.18s}
+  button:hover:not(:disabled){background:#7dd3fc;transform:translateY(-1px)}
+  button:disabled{opacity:.55;cursor:not-allowed}
+  .hint{margin:18px 0 0;font-size:12.5px;color:#64748b;line-height:1.6}
+  #msg{margin:18px 0 0;font-size:14.5px;min-height:22px}
+  .ok{color:#4ade80}.bad{color:#f87171}
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>🕹️ Minecraft 服务器</h1>
+  <p>点击下方按钮唤醒服务器<br>约 <b>3~5 分钟</b> 后即可连接<br><code>mc.furina.fun</code></p>
+  <button id="go">启动服务器</button>
+  <div id="msg"></div>
+  <p class="hint">无人游玩 10 分钟后会自动节省停机，下次再来点一下就好</p>
+</div>
+
+<script>
+// 阿里云函数计算触发器（直连，无需代理）
+const FC_URL = "https://mc-start-mc-serv-control-alwwvseret.cn-hangzhou.fcapp.run/?token=***REMOVED***";
+
+const btn = document.getElementById("go");
+const msg = document.getElementById("msg");
+
+btn.addEventListener("click", async () => {
+  btn.disabled = true;
+  btn.textContent = "正在唤醒…";
+  msg.className = "";
+  msg.textContent = "正在向云函数发送开机指令…";
+  try {
+    // no-cors：我们只需要请求送达，不读响应
+    await fetch(FC_URL, { mode: "no-cors", cache: "no-store" });
+    msg.className = "ok";
+    let t = 180;
+    const tick = () => {
+      if (t <= 0) { msg.textContent = "✅ 应该已经开机了，现在打开游戏连接 mc.furina.fun 吧！"; return; }
+      msg.textContent = `✅ 开机指令已送达（剩余约 ${Math.floor(t/60)}:${String(t%60).padStart(2,"0")}）`;
+      t -= 1; setTimeout(tick, 1000);
+    };
+    tick();
+  } catch (e) {
+    msg.className = "bad";
+    msg.textContent = "⚠️ 指令发送失败，请检查网络后重试";
+    btn.disabled = false;
+    btn.textContent = "启动服务器";
+  }
+});
+</script>
+</body>
+</html>

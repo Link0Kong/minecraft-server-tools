@@ -1,0 +1,14 @@
+[Unit]
+Description=DDNS Updater Timer
+Requires=ddns-update.service
+
+[Timer]
+# 开机后 30 秒执行第一次
+OnBootSec=30s
+# 之后每 5 分钟检查一次（兜底）
+OnUnitActiveSec=5min
+# 如果错过了执行时间（如系统关机期间），启动后立即补上
+Persistent=true
+
+[Install]
+WantedBy=timers.target
