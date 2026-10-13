@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """一键启动 Minecraft 服务器（走阿里云函数计算 FC，国内直连，无需翻墙）"""
+import os
 import urllib.request
 
-TOKEN = "***REMOVED***"
+TOKEN = os.environ.get("MC_START_TOKEN", "")
 URL = ("https://mc-start-mc-serv-control-alwwvseret.cn-hangzhou.fcapp.run/"
        "?token=" + TOKEN)
 
